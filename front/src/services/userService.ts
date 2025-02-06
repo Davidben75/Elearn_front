@@ -1,4 +1,5 @@
 import axios from "axios";
+import { handleError } from "./errorHandler";
 const apiUrl = import.meta.env.VITE_API;
 
 type AddLeanerInputs = {
@@ -6,11 +7,6 @@ type AddLeanerInputs = {
     name: string;
     lastName: string;
 };
-
-interface ErrorResponse {
-    message: string;
-    statusCode: number;
-}
 
 class UserService {
     // COMMON
@@ -35,24 +31,10 @@ class UserService {
             console.log(response.data);
             return response.data;
         } catch (error) {
-            this.handleError(error);
+            handleError(error);
         }
     }
 
     // ADMIN
-
-    private handleError(error: unknown) {
-        if (axios.isAxiosError(error)) {
-            if (error.response?.data.message) {
-                throw new Error(error.response.data.message);
-            }
-            const serverError = error.response?.data as ErrorResponse;
-            throw new Error(serverError.message || "Une erreur est survenue");
-        } else if (error instanceof Error) {
-            throw error;
-        } else {
-            throw new Error("Une erreur inattendue est survenue");
-        }
-    }
 }
 export default new UserService();
