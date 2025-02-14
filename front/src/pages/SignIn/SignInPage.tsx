@@ -4,6 +4,7 @@ import authService from "../../services/authService";
 import { useNavigate } from "react-router-dom";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import { useAuth } from "../../context/AuthContext";
+import { useHandleError } from "../../hooks/useHandleError";
 
 export type LoginInputs = {
     email: string;
@@ -19,6 +20,8 @@ export const SignInPage = () => {
     const [loginError, setLoginError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
+    const handleError = useHandleError();
+
     const { setIsAuthenticated } = useAuth();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [user, setUser] = useLocalStorage("user", null);
@@ -32,7 +35,7 @@ export const SignInPage = () => {
         setLoginError(null);
 
         try {
-            const response = await authService.login(data);
+            const response = await authService.login(data, handleError);
             setUser(response.user);
             setToken(response.token);
             setIsAuthenticated(true);

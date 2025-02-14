@@ -1,5 +1,5 @@
-import CourseGrid from "../../components/CourseGrid";
-import CourseTableView from "../../components/CourseTableView";
+import CourseGrid from "../../components/Course/CourseGrid";
+import CourseTableView from "../../components/Course/CourseTableView";
 import Sidebar from "../../components/Sidebar";
 import useLocalStorage from "../../hooks/useLocalStorage";
 

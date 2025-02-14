@@ -48,8 +48,8 @@ const QuickAction = () => {
         content = (
             <>
                 <Article
-                    title="Add User"
-                    link="/add-user"
+                    title="Add learner"
+                    link="/add-learner"
                     icon={<FaUserEdit />}
                 />
                 <Article

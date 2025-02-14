@@ -1,8 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaTrash } from "react-icons/fa";
 import Sidebar from "../../components/Sidebar";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import { NavLink } from "react-router-dom";
+import { useHandleError } from "../../hooks/useHandleError";
+import { toast, ToastContainer } from "react-toastify";
+import userService from "../../services/userService";
+import { UserList } from "../../interfaces/userInterface";
 
 interface StatusPillProps {
     status: string;
@@ -31,43 +35,12 @@ const StatusPill = ({ status, onChange }: StatusPillProps) => {
 
 const UsersPage = () => {
     const [user] = useLocalStorage("user");
+
+    const handleError = useHandleError();
     const isAdmin = user && user.role === "ADMIN";
     const isTutor = user && user.role === "TUTOR";
 
-    const [users, setUsers] = useState([
-        {
-            id: 1,
-            name: "John",
-            email: "john@example.com",
-            lastName: "Doe",
-            role: "LEARNER",
-            status: "ACTIVE",
-        },
-        {
-            id: 2,
-            name: "Jane",
-            email: "jane@example.com",
-            lastName: "Smith",
-            role: "TUTOR",
-            status: "INACTIVE",
-        },
-        {
-            id: 3,
-            name: "Bob",
-            email: "bob@example.com",
-            lastName: "Johnson",
-            role: "LEARNER",
-            status: "SUSPENDED",
-        },
-        {
-            id: 4,
-            name: "Alice",
-            email: "alice@example.com",
-            lastName: "Brown",
-            role: "LEARNER",
-            status: "ACTIVE",
-        },
-    ]);
+    const [users, setUsers] = useState<UserList[]>([]);
 
     const handleStatusChange = (userId: number, newStatus: string) => {
         setUsers(
@@ -77,8 +50,31 @@ const UsersPage = () => {
         );
     };
 
+    const fetchListLearners = async () => {
+        try {
+            const response = await userService.getTutorCurrentLearners(
+                handleError
+            );
+
+            if (response) {
+                console.log(response);
+                setUsers(response.users);
+            }
+        } catch (error) {
+            if (error instanceof Error) {
+                toast.error(error.message || "Unable to fetch your learners");
+            }
+            toast.error("Unexpected error occured.");
+        }
+    };
+
+    useEffect(() => {
+        fetchListLearners();
+    }, []);
+
     return (
         <main className="flex h-screen bg-grey-100">
+            <ToastContainer />
             <Sidebar />
             <div className="flex-1 p-10 overflow-auto">
                 <h1 className="text-2xl font-bold text-gray-900 mb-6">
@@ -121,12 +117,15 @@ const UsersPage = () => {
                                 >
                                     Status
                                 </th>
-                                <th
-                                    scope="col"
-                                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                >
-                                    Role
-                                </th>
+                                {isAdmin && (
+                                    <th
+                                        scope="col"
+                                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                    >
+                                        Role
+                                    </th>
+                                )}
+
                                 <th
                                     scope="col"
                                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -136,39 +135,46 @@ const UsersPage = () => {
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                            {users.map((user) => (
-                                <tr key={user.id} className="hover:bg-gray-50">
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="text-sm font-medium text-gray-900">{`${user.name} ${user.lastName}`}</div>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="text-sm text-gray-900">
-                                            {user.email}
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <StatusPill
-                                            status={user.status}
-                                            onChange={(newStatus) =>
-                                                handleStatusChange(
-                                                    user.id,
-                                                    newStatus
-                                                )
-                                            }
-                                        />
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="text-sm text-gray-900">
-                                            {user.role}
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <button className="text-red-600 hover:text-red-900 mr-2">
-                                            <FaTrash />
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
+                            {users &&
+                                users?.map((user) => (
+                                    <tr
+                                        key={user.id}
+                                        className="hover:bg-gray-50"
+                                    >
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="text-sm font-medium text-gray-900">{`${user.name} ${user.lastName}`}</div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="text-sm text-gray-900">
+                                                {user.email}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <StatusPill
+                                                status={user.status}
+                                                onChange={(newStatus) =>
+                                                    handleStatusChange(
+                                                        user.id,
+                                                        newStatus
+                                                    )
+                                                }
+                                            />
+                                        </td>
+                                        {isAdmin && (
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <div className="text-sm text-gray-900">
+                                                    {user.role}
+                                                </div>
+                                            </td>
+                                        )}
+
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <button className="text-red-600 hover:text-red-900 mr-2">
+                                                <FaTrash />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
                         </tbody>
                     </table>
                 </div>

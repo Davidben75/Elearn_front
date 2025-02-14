@@ -6,9 +6,9 @@ import ModalPasswordChange from "../../components/ModalPasswordChange";
 
 const Profile = () => {
     const [user, setUser] = useLocalStorage("user", {
-        name: "John Doe",
+        name: "John",
+        lastName: "Doe",
         email: "john@example.com",
-        role: "LEARNER",
     });
 
     const [isEditing, setIsEditing] = useState(false);

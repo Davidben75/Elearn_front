@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import authService from "../../services/authService";
 import { useNavigate } from "react-router-dom";
+import { useHandleError } from "../../hooks/useHandleError";
 
 export type SignUpInputs = {
     name: string;
@@ -18,6 +19,8 @@ const SignUpPage = () => {
         formState: { errors },
     } = useForm<SignUpInputs>();
 
+    const handleError = useHandleError();
+
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -26,7 +29,7 @@ const SignUpPage = () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await authService.register(data);
+            const response = await authService.register(data, handleError);
             if (response) {
                 setLoading(false);
                 navigate("/login");

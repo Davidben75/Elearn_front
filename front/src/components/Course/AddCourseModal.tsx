@@ -1,21 +1,25 @@
-import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { AddCourseInputs } from "../../interfaces/courseInterface";
 
 interface AddCourseModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (data: { name: string; description: string }) => void;
+    onSubmit: (data: AddCourseInputs) => void;
 }
 
 function AddCourseModal({ isOpen, onClose, onSubmit }: AddCourseModalProps) {
-    const [name, setName] = useState("");
-    const [description, setDescription] = useState("");
+    const { register, handleSubmit, reset } = useForm<AddCourseInputs>({
+        defaultValues: {
+            title: "",
+            description: "",
+            status: "INACTIVE",
+        },
+    });
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        onSubmit({ name, description });
-        setName("");
-        setDescription("");
+    const onFormSubmit = (data: AddCourseInputs) => {
+        onSubmit(data);
         onClose();
+        reset(); // Reset the form after submission
     };
 
     if (!isOpen) return null;
@@ -30,21 +34,22 @@ function AddCourseModal({ isOpen, onClose, onSubmit }: AddCourseModalProps) {
                     <h3 className="text-lg leading-6 font-medium text-gray-900">
                         Add New Course
                     </h3>
-                    <form onSubmit={handleSubmit} className="mt-2 text-left">
+                    <form
+                        onSubmit={handleSubmit(onFormSubmit)}
+                        className="mt-2 text-left"
+                    >
                         <div className="mb-4">
                             <label
-                                htmlFor="name"
+                                htmlFor="title"
                                 className="block text-gray-700 text-sm font-bold mb-2"
                             >
                                 Course Name
                             </label>
                             <input
                                 type="text"
-                                id="name"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
+                                id="title"
+                                {...register("title", { required: true })}
                                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                required
                             />
                         </div>
                         <div className="mb-4">
@@ -56,11 +61,8 @@ function AddCourseModal({ isOpen, onClose, onSubmit }: AddCourseModalProps) {
                             </label>
                             <textarea
                                 id="description"
-                                value={description}
-                                onChange={(e) => setDescription(e.target.value)}
+                                {...register("description", { required: true })}
                                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                rows="3"
-                                required
                             ></textarea>
                         </div>
                         <div className="flex items-center justify-between">
@@ -71,6 +73,7 @@ function AddCourseModal({ isOpen, onClose, onSubmit }: AddCourseModalProps) {
                                 Add Course
                             </button>
                             <button
+                                type="button"
                                 onClick={onClose}
                                 className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                             >

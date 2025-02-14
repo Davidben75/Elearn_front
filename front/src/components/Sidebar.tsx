@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import {
     FaHome,
@@ -8,16 +8,17 @@ import {
     FaBook,
     FaUserGraduate,
 } from "react-icons/fa";
-import { IconType } from "react-icons";
 import useLocalStorage from "../hooks/useLocalStorage";
 
 const Sidebar = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const toggleSidebar = () => setIsOpen(!isOpen);
     const [user] = useLocalStorage("user");
 
-    const isAdmin = user && user.role === "ADMIN";
-    const isTutor = user && user.role === "TUTOR";
+    const isAdmin = user?.role === "ADMIN";
+    const isTutor = user?.role === "TUTOR";
+
+    // Toggle sidebar with useCallback to memoize the function
+    const toggleSidebar = useCallback(() => setIsOpen((prev) => !prev), []);
 
     return (
         <>
@@ -25,15 +26,17 @@ const Sidebar = () => {
             <button
                 onClick={toggleSidebar}
                 className="fixed top-4 left-4 z-50 p-2 bg-gray-800 text-white rounded-md md:hidden"
+                aria-label="Toggle sidebar"
             >
                 <FaBars />
             </button>
 
             {/* Sidebar */}
             <aside
-                className={`left-0 h-full bg-gray-800 text-white transition-all duration-300 ease-in-out z-40
-                    ${isOpen ? "max-w-64" : "w-0 md:w-35 lg:w-45"}
-                `}
+                className={` left-0 h-full bg-gray-800 text-white transition-all duration-300 ease-in-out z-40 ${
+                    isOpen ? "w-64" : "w-0 md:w-16 lg:w-20"
+                }`}
+                aria-expanded={isOpen}
             >
                 <nav className="flex flex-col h-full">
                     <div className="p-4 text-2xl font-bold text-center md:hidden">
@@ -55,13 +58,11 @@ const Sidebar = () => {
                         )}
 
                         {isTutor && (
-                            <>
-                                <SidebarItem
-                                    icon={<FaUserGraduate />}
-                                    text="Learners"
-                                    link="/learners"
-                                />
-                            </>
+                            <SidebarItem
+                                icon={<FaUserGraduate />}
+                                text="Learners"
+                                link="/learners"
+                            />
                         )}
 
                         <SidebarItem
@@ -89,25 +90,19 @@ const Sidebar = () => {
                 <div
                     className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
                     onClick={toggleSidebar}
+                    aria-hidden="true"
                 ></div>
             )}
         </>
     );
 };
 
-const SidebarItem = ({
-    icon,
-    text,
-    link,
-}: {
-    icon: React.ReactElement<IconType>;
-    text: string;
-    link: string;
-}) => (
+const SidebarItem = ({ icon, text, link }) => (
     <li>
         <Link
             to={link}
             className="flex items-center p-4 hover:bg-gray-700 transition-colors duration-200"
+            aria-label={text}
         >
             <span className="text-xl mr-4">{icon}</span>
             <span className="hidden md:inline lg:inline">{text}</span>

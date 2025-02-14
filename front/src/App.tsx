@@ -36,7 +36,10 @@ function App() {
 
                     {/* COURSE */}
                     <Route path="/courses" element={<CoursePage />} />
-                    <Route path="/course-edit" element={<CoursePageEdit />} />
+                    <Route
+                        path="/course-edit/:id"
+                        element={<CoursePageEdit />}
+                    />
                 </Route>
 
                 <Route path="/login" element={<SignInPage />} />

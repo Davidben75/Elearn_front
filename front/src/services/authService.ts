@@ -2,10 +2,12 @@ import axios from "axios";
 const apiUrl = import.meta.env.VITE_API;
 import { LoginInputs } from "../pages/SignIn/SignInPage";
 import { SignUpInputs } from "../pages/SignUp/SignUpPage";
-import { handleError } from "./errorHandler";
 
 class AuthService {
-    async login(loginInputs: LoginInputs) {
+    async login(
+        loginInputs: LoginInputs,
+        handleError: (error: unknown) => void
+    ) {
         try {
             const response = await axios.post(
                 `${apiUrl}auth/login`,
@@ -19,7 +21,10 @@ class AuthService {
         }
     }
 
-    async register(registerInputs: SignUpInputs) {
+    async register(
+        registerInputs: SignUpInputs,
+        handleError: (error: unknown) => void
+    ) {
         try {
             const response = await axios.post(
                 `${apiUrl}auth/register`,
@@ -37,7 +42,7 @@ class AuthService {
             localStorage.removeItem("user");
             return true;
         } catch (error) {
-            handleError(error);
+            console.error("Error logging out:", error);
         }
     }
 }
