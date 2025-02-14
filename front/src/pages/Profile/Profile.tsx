@@ -113,26 +113,6 @@ const Profile = () => {
                                 {user.role}
                             </p>
                         </div>
-                        <div>
-                            <label
-                                htmlFor="bio"
-                                className="block text-sm font-medium text-gray-700"
-                            >
-                                Bio
-                            </label>
-                            {isEditing ? (
-                                <textarea
-                                    id="bio"
-                                    name="bio"
-                                    value={editedUser.bio}
-                                    onChange={handleInputChange}
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                                    rows="3"
-                                ></textarea>
-                            ) : (
-                                <p className="mt-1 text-lg">{user.bio}</p>
-                            )}
-                        </div>
                     </section>
 
                     {isEditing && (
