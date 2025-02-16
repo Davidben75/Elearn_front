@@ -4,36 +4,19 @@ import { LoginInputs } from "../pages/SignIn/SignInPage";
 import { SignUpInputs } from "../pages/SignUp/SignUpPage";
 
 class AuthService {
-    async login(
-        loginInputs: LoginInputs,
-        handleError: (error: unknown) => void
-    ) {
-        try {
-            const response = await axios.post(
-                `${apiUrl}auth/login`,
-                loginInputs
-            );
+    async login(loginInputs: LoginInputs) {
+        const response = await axios.post(`${apiUrl}auth/login`, loginInputs);
 
-            console.log(response.data);
-            return response.data;
-        } catch (error) {
-            handleError(error);
-        }
+        console.log(response.data);
+        return response.data;
     }
 
-    async register(
-        registerInputs: SignUpInputs,
-        handleError: (error: unknown) => void
-    ) {
-        try {
-            const response = await axios.post(
-                `${apiUrl}auth/register`,
-                registerInputs
-            );
-            return response.data;
-        } catch (error) {
-            handleError(error);
-        }
+    async register(registerInputs: SignUpInputs) {
+        const response = await axios.post(
+            `${apiUrl}auth/register`,
+            registerInputs
+        );
+        return response.data;
     }
 
     async logout() {

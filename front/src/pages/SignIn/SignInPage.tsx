@@ -35,16 +35,20 @@ export const SignInPage = () => {
         setLoginError(null);
 
         try {
-            const response = await authService.login(data, handleError);
+            const response = await authService.login(data);
             setUser(response.user);
             setToken(response.token);
             setIsAuthenticated(true);
             console.log("Login response: ", response);
-            navigate("/dashboard");
-        } catch (error) {
-            if (error instanceof Error) {
-                setLoginError(error.message);
+            if (response.user.status === "INACTIVE") {
+                console.log("FIRST CONNECTION ");
+                navigate("/first-login");
+            } else {
+                navigate("/dashboard");
             }
+        } catch (error) {
+            console.error(error);
+            handleError(error);
         } finally {
             setIsLoading(false);
         }

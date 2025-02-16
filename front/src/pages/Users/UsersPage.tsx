@@ -4,7 +4,6 @@ import Sidebar from "../../components/Sidebar";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import { NavLink } from "react-router-dom";
 import { useHandleError } from "../../hooks/useHandleError";
-import { toast, ToastContainer } from "react-toastify";
 import userService from "../../services/userService";
 import { UserList } from "../../interfaces/userInterface";
 
@@ -52,19 +51,15 @@ const UsersPage = () => {
 
     const fetchListLearners = async () => {
         try {
-            const response = await userService.getTutorCurrentLearners(
-                handleError
-            );
+            const response = await userService.getTutorCurrentLearners();
 
             if (response) {
                 console.log(response);
                 setUsers(response.users);
             }
         } catch (error) {
-            if (error instanceof Error) {
-                toast.error(error.message || "Unable to fetch your learners");
-            }
-            toast.error("Unexpected error occured.");
+            console.log(error);
+            handleError(error);
         }
     };
 
@@ -74,7 +69,6 @@ const UsersPage = () => {
 
     return (
         <main className="flex h-screen bg-grey-100">
-            <ToastContainer />
             <Sidebar />
             <div className="flex-1 p-10 overflow-auto">
                 <h1 className="text-2xl font-bold text-gray-900 mb-6">

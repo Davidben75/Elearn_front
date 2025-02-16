@@ -1,6 +1,7 @@
 import axios from "axios";
-import authService from "../services/authService";
 import { useNavigate } from "react-router-dom";
+import authService from "../services/authService";
+import { toast } from "react-toastify";
 
 interface ErrorResponse {
     message: string;
@@ -21,14 +22,17 @@ export const useHandleError = () => {
                     authService.logout();
                     navigate("/login");
                 }
-                throw new Error(error.response.data.message);
+                toast.error(error.response.data.message);
+            } else {
+                const serverError = error.response?.data as ErrorResponse;
+                toast.error(
+                    serverError.message || "An unexpected error occurred"
+                );
             }
-            const serverError = error.response?.data as ErrorResponse;
-            throw new Error(serverError.message || "Une erreur est survenue");
         } else if (error instanceof Error) {
-            throw error;
+            toast.error(error.message);
         } else {
-            throw new Error("Une erreur inattendue est survenue");
+            toast.error("An unexpected error occurred");
         }
     };
 };

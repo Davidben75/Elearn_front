@@ -13,6 +13,9 @@ import UsersPage from "./pages/Users/UsersPage";
 import Profile from "./pages/Profile/Profile";
 import UserAdd from "./pages/Users/UserAdd";
 import CoursePageEdit from "./pages/Course/CoursePageEdit";
+import CourseEnrollment from "./pages/Course/CourseEnrollment";
+import FirstLogin from "./pages/FirstLogin/FirstLogin";
+import { ToastContainer } from "react-toastify";
 
 function App() {
     const location = useLocation();
@@ -21,6 +24,7 @@ function App() {
 
     return (
         <>
+            <ToastContainer />
             {!hideHeader.includes(location.pathname) && <Header />}
 
             <Routes>
@@ -40,7 +44,15 @@ function App() {
                         path="/course-edit/:id"
                         element={<CoursePageEdit />}
                     />
+
+                    <Route
+                        path="/course-enrollment/:id"
+                        element={<CourseEnrollment />}
+                    />
+
+                    <Route path="//first-login" element={<FirstLogin />} />
                 </Route>
+                {/* END PROTECTED ROUTES */}
 
                 <Route path="/login" element={<SignInPage />} />
                 <Route path="/register" element={<SignUpPage />} />

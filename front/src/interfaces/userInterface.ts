@@ -6,3 +6,9 @@ export interface UserList {
     email: string;
     role?: string;
 }
+
+export interface PasswordsInputs {
+    oldPassword?: string;
+    newPassword: string;
+    confirmPassword?: string;
+}

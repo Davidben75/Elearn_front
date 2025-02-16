@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Sidebar from "../../components/Sidebar";
 import userService from "../../services/userService";
 import { useHandleError } from "../../hooks/useHandleError";
+import { toast } from "react-toastify";
 
 type AddLearnerInputs = {
     email: string;
@@ -26,7 +26,7 @@ const UserAdd = () => {
     const onSubmit: SubmitHandler<AddLearnerInputs> = async (data) => {
         setLoading(true);
         try {
-            const response = await userService.addLeaner(data, handleError);
+            const response = await userService.addLeaner(data);
             if (response) {
                 toast.success("Learner added successfully!");
                 if (response.emailSent) {
@@ -38,12 +38,7 @@ const UserAdd = () => {
             }
         } catch (error) {
             console.error(error);
-            if (error instanceof Error) {
-                toast.error(
-                    (error.message as string) ||
-                        "An error occurred. Please try again later."
-                );
-            }
+            handleError(error);
         } finally {
             setLoading(false);
         }
@@ -52,7 +47,6 @@ const UserAdd = () => {
     return (
         <main className="flex h-screen bg-gray-100">
             <Sidebar />
-            <ToastContainer />
             <div className="w-full p-6 md:p-10">
                 <h1 className="text-2xl font-bold mb-6 text-gray-800">
                     Add New Learner

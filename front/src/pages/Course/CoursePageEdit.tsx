@@ -14,7 +14,7 @@ import ModulePreview from "../../components/Course/courseModules/ModulePreview";
 import CourseEditor from "../../components/Course/CourseEditor";
 import CourseDetails from "../../components/Course/CourseDetails";
 import ModuleList from "../../components/Course/courseModules/ModuleList";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { useHandleError } from "../../hooks/useHandleError";
 
 const CoursePageEdit: React.FC = () => {
@@ -45,13 +45,11 @@ const CoursePageEdit: React.FC = () => {
 
     const fetchCourse = async () => {
         try {
-            const response = await courseService.getOneCourse(
-                id as string,
-                handleError
-            );
+            const response = await courseService.getOneCourse(id as string);
             setCourse(response.course);
         } catch (error) {
             console.error(error);
+            handleError(error);
         }
     };
 
@@ -243,10 +241,7 @@ const CoursePageEdit: React.FC = () => {
     // Add new module
     const handleSubmitNewModule = async (data: AddModuleInputs) => {
         try {
-            const response = await courseService.createModule(
-                data,
-                handleError
-            );
+            const response = await courseService.createModule(data);
             console.log(response);
             if (response) {
                 console.log(response);
@@ -255,11 +250,8 @@ const CoursePageEdit: React.FC = () => {
             toast.success("Module added successfully");
             setShowForm(false);
         } catch (error) {
-            if (error instanceof Error) {
-                toast.error(error.message || "An error occurred");
-            } else {
-                toast.error("An unexpected error occurred. Please try again.");
-            }
+            console.log(error);
+            handleError(error);
         }
     };
 
@@ -325,13 +317,12 @@ const CoursePageEdit: React.FC = () => {
     return (
         <main className="flex h-screen bg-gray-100">
             {/* Sidebar */}
-            <ToastContainer />
             <section className="bg-white border-b border-gray-200 p-4 overflow-y-auto">
                 <CourseDetails course={course} />
                 <button
                     onClick={() => {
                         setModule({
-                            id: null,
+                            id: null ?? module.id,
                             courseId: course.id,
                             title: "",
                             contentType: "WEBLINK",

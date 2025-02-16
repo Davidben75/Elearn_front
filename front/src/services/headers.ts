@@ -1,3 +1,1 @@
-export const headersAuthorization = `Bearer ${JSON.parse(
-    localStorage.getItem("token") as string
-)}`;
+export const headersAuthorization = `Bearer ${localStorage.getItem("token")}`;

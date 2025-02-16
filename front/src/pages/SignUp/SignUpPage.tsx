@@ -29,15 +29,14 @@ const SignUpPage = () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await authService.register(data, handleError);
+            const response = await authService.register(data);
             if (response) {
                 setLoading(false);
                 navigate("/login");
             }
         } catch (error) {
-            if (error instanceof Error) {
-                setError(`${error.message}`);
-            }
+            console.log(error);
+            handleError(error);
         } finally {
             setLoading(false);
         }

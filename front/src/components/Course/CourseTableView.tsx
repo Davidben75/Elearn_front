@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { FaEdit, FaEye, FaTrash } from "react-icons/fa";
+import { FaEye, FaTrash } from "react-icons/fa";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import AddCourseModal from "./AddCourseModal";
-import { toast, ToastContainer } from "react-toastify";
 import courseService from "../../services/courseService";
 import { Link, useNavigate } from "react-router-dom";
 import { AddCourseInputs, Courses } from "../../interfaces/courseInterface";
 import { useHandleError } from "../../hooks/useHandleError";
+import { FaGraduationCap } from "react-icons/fa6";
 
 const StatusPill = ({
     status,
@@ -48,9 +48,7 @@ const CourseTableView = () => {
     const fetchCourses = async () => {
         try {
             if (isTutor) {
-                const response = await courseService.getTutorCourses(
-                    handleError
-                );
+                const response = await courseService.getTutorCourses();
 
                 if (response) {
                     console.log(response);
@@ -60,39 +58,31 @@ const CourseTableView = () => {
                 console.log("ADMni");
             }
         } catch (error) {
-            if (error instanceof Error) {
-                toast.error(error.message);
-            }
+            console.log(error);
+            handleError(error);
         }
     };
 
     useEffect(() => {
         fetchCourses();
-    }, [courses]);
+    }, []);
 
     const handleAddCourse = async (newCourse: AddCourseInputs) => {
         try {
-            const response = await courseService.createCourse(
-                newCourse,
-                handleError
-            );
+            const response = await courseService.createCourse(newCourse);
             if (response) {
                 console.log(response.course.id);
                 navigate(`/course-edit/${response.course.id}`);
             }
         } catch (error) {
-            if (error instanceof Error) {
-                console.error(error.message);
-                toast.error(error.message || "An error occurred");
-            }
-
-            toast.error("An unexpected error occurred");
+            console.log(error);
+            handleError(error);
         }
     };
 
     const handleStatusChange = (courseId: number, newStatus: string) => {
         setCourses(
-            courses.map((course) =>
+            courses!.map((course) =>
                 course.id === courseId
                     ? { ...course, status: newStatus }
                     : course
@@ -102,7 +92,6 @@ const CourseTableView = () => {
 
     return (
         <div className="overflow-x-auto shadow-md rounded-lg w-full p-6">
-            <ToastContainer />
             {/* Table */}
             <h2 className="text-2xl font-bold mb-4">Courses</h2>
             {isTutor && (
@@ -213,9 +202,15 @@ const CourseTableView = () => {
                                     </button>
                                     <Link
                                         to={`/course-edit/${course.id}`}
-                                        className="text-green-600 hover:text-green-900"
+                                        className="text-green-600 hover:text-green-900 mr-2"
                                     >
                                         <FaEye />
+                                    </Link>
+                                    <Link
+                                        to={`/course-enrollment/${course.id}`}
+                                        className="text-blue-600 hover:text-blue-900 mr-2"
+                                    >
+                                        <FaGraduationCap />
                                     </Link>
                                 </td>
                             </tr>
