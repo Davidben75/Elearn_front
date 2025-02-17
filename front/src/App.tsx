@@ -16,6 +16,7 @@ import CoursePageEdit from "./pages/Course/CoursePageEdit";
 import CourseEnrollment from "./pages/Course/CourseEnrollment";
 import FirstLogin from "./pages/FirstLogin/FirstLogin";
 import { ToastContainer } from "react-toastify";
+import CoursePageOne from "./pages/Course/CoursePageOne";
 
 function App() {
     const location = useLocation();
@@ -31,26 +32,25 @@ function App() {
                 {/* PROTECTED ROUTES */}
                 <Route element={<ProtectedRoute />}>
                     <Route path="/dashboard" element={<DashboardPage />} />
-
                     <Route path="/profile" element={<Profile />} />
-
                     {/* USERS */}
                     <Route path="/learners" element={<UsersPage />} />
                     <Route path="/add-learner" element={<UserAdd />} />
-
                     {/* COURSE */}
                     <Route path="/courses" element={<CoursePage />} />
                     <Route
                         path="/course-edit/:id"
                         element={<CoursePageEdit />}
                     />
-
                     <Route
                         path="/course-enrollment/:id"
                         element={<CourseEnrollment />}
                     />
-
-                    <Route path="//first-login" element={<FirstLogin />} />
+                    <Route
+                        path="/course/view/:id"
+                        element={<CoursePageOne />}
+                    />
+                    <Route path="/first-login" element={<FirstLogin />} />
                 </Route>
                 {/* END PROTECTED ROUTES */}
 

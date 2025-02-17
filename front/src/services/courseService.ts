@@ -140,6 +140,21 @@ class CourseService {
         return response.data;
     }
 
+    async getLearnersEnrolledCourses() {
+        const response = await axios.get(
+            `${apiUrl}enrollment/learner-courses`,
+            {
+                headers: {
+                    Authorization: `Bearer ${JSON.parse(
+                        localStorage.getItem("token") as string
+                    )}`,
+                },
+            }
+        );
+
+        return response.data;
+    }
+
     async deleteCourse() {}
 
     async updateModule() {}

@@ -6,7 +6,7 @@ import { FaFilePdf, FaLink, FaVideo } from "react-icons/fa";
 
 interface ModuleListProps {
     modules: Module[];
-    onSelectModule: (module: Module) => void;
+    onSelectModule?: (module: Module) => void;
     onRemoveModule: (moduleId: number) => void;
 }
 
