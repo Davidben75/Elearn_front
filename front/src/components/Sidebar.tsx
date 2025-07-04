@@ -7,6 +7,7 @@ import {
     FaBars,
     FaBook,
     FaUserGraduate,
+    FaSignOutAlt,
 } from "react-icons/fa";
 import useLocalStorage from "../hooks/useLocalStorage";
 
@@ -43,44 +44,24 @@ const Sidebar = () => {
                         Menu
                     </div>
                     <ul className="flex-grow space-y-2">
-                        <SidebarItem
-                            icon={<FaHome />}
-                            text="Home"
-                            link="/dashboard"
-                        />
+                        <SidebarItem icon={<FaHome />} link="/dashboard" />
 
                         {isAdmin && (
-                            <SidebarItem
-                                icon={<FaCog />}
-                                text="Admin"
-                                link="/admin/users"
-                            />
+                            <SidebarItem icon={<FaCog />} link="/admin/users" />
                         )}
 
                         {isTutor && (
                             <SidebarItem
                                 icon={<FaUserGraduate />}
-                                text="Learners"
                                 link="/learners"
                             />
                         )}
 
-                        <SidebarItem
-                            icon={<FaBook />}
-                            text="Courses"
-                            link="/courses"
-                        />
+                        <SidebarItem icon={<FaBook />} link="/courses" />
 
-                        <SidebarItem
-                            icon={<FaUser />}
-                            text="Profile"
-                            link="/profile"
-                        />
-                        <SidebarItem
-                            icon={<FaCog />}
-                            text="Settings"
-                            link="/settings"
-                        />
+                        <SidebarItem icon={<FaUser />} link="/profile" />
+                        <SidebarItem icon={<FaCog />} link="/settings" />
+                        <SidebarItem icon={<FaSignOutAlt />} link="/logout" />
                     </ul>
                 </nav>
             </aside>
@@ -97,15 +78,13 @@ const Sidebar = () => {
     );
 };
 
-const SidebarItem = ({ icon, text, link }) => (
+const SidebarItem = ({ icon, link }) => (
     <li>
         <Link
             to={link}
             className="flex items-center p-4 hover:bg-gray-700 transition-colors duration-200"
-            aria-label={text}
         >
             <span className="text-xl mr-4">{icon}</span>
-            <span className="hidden md:inline lg:inline">{text}</span>
         </Link>
     </li>
 );

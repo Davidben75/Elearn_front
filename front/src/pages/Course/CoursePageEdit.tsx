@@ -1,7 +1,7 @@
 // src/pages/CoursePageEdit/CoursePageEdit.tsx
 
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import courseService from "../../services/courseService";
 import {
     AddModuleInputs,
@@ -18,6 +18,7 @@ import { toast } from "react-toastify";
 import { useHandleError } from "../../hooks/useHandleError";
 
 const CoursePageEdit: React.FC = () => {
+    const navigate = useNavigate();
     const [course, setCourse] = useState<Course | null>(null);
     const [module, setModule] = useState<Module>({
         id: 0,
@@ -76,13 +77,6 @@ const CoursePageEdit: React.FC = () => {
 
         setCurrentModule(module);
         setShowForm(true);
-    };
-
-    const handleSelectContentType = (e: ChangeEvent<HTMLSelectElement>) => {
-        setModule({
-            ...module,
-            contentType: e.target.value,
-        });
     };
 
     const handleInputChange = (
@@ -235,9 +229,6 @@ const CoursePageEdit: React.FC = () => {
         // });
     };
 
-    // Update module
-    const handleUpdateModule = (moduleId: number) => {};
-
     // Add new module
     const handleSubmitNewModule = async (data: AddModuleInputs) => {
         try {
@@ -318,11 +309,18 @@ const CoursePageEdit: React.FC = () => {
         <main className="flex h-screen bg-gray-100">
             {/* Sidebar */}
             <section className="bg-white border-b border-gray-200 p-4 overflow-y-auto">
+                <button
+                    onClick={() => navigate(-1)}
+                    className="mb-4 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
+                >
+                    ← Go Back
+                </button>
+
                 <CourseDetails course={course} />
                 <button
                     onClick={() => {
                         setModule({
-                            id: null ?? module.id,
+                            id: 0,
                             courseId: course.id,
                             title: "",
                             contentType: "WEBLINK",
@@ -330,6 +328,7 @@ const CoursePageEdit: React.FC = () => {
                             url: "",
                             file: null,
                         });
+                        setCurrentModule(module);
                         setShowForm(true);
                     }}
                     className="w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition mb-4"
